@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Red Jeep -->
+  <g transform="translate(10,20)">
+    <rect x="0" y="0" width="30" height="20" fill="#ff0000" stroke="#000" stroke-width="2"/>
+    <rect x="5" y="-5" width="20" height="5" fill="#ff0000" stroke="#000" stroke-width="2"/>
+    <rect x="8" y="5" width="14" height="10" fill="#333" stroke="#000" stroke-width="2"/>
+    <circle cx="5" cy="20" r="5" fill="#000"/>
+    <circle cx="25" cy="20" r="5" fill="#000"/>
+  </g>
+  
+  <!-- Blue Jeep -->
+  <g transform="translate(60,60) rotate(180)">
+    <rect x="0" y="0" width="30" height="20" fill="#0000ff" stroke="#000" stroke-width="2"/>
+    <rect x="5" y="-5" width="20" height="5" fill="#0000ff" stroke="#000" stroke-width="2"/>
+    <rect x="8" y="5" width="14" height="10" fill="#333" stroke="#000" stroke-width="2"/>
+    <circle cx="5" cy="20" r="5" fill="#000"/>
+    <circle cx="25" cy="20" r="5" fill="#000"/>
+  </g>
+</svg>
