@@ -1,6 +1,6 @@
 # Party Pooper Jeeps
 
-Party Pooper Jeeps is a retro-inspired split-screen multiplayer tank game where players compete by invading each other's base and returning presents and the stolen Christmas tree to their own base. The game includes various mechanics such as fuel, speed, score, collecting presents and stealing the Christmas tree.
+Party Pooper Jeeps is a retro-inspired split-screen multiplayer jeep game where players compete by invading each other's base and returning presents and the stolen Christmas tree to their own base. The game includes various mechanics such as fuel, speed, score, collecting presents and stealing the Christmas tree.
 
 ## Screenshots
 
