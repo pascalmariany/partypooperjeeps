@@ -31,14 +31,22 @@ export class RetroUI {
   updateStats(vehicle: Vehicle, side: 'left' | 'right') {
     if (!vehicle) return;
 
-    // Clear existing stats for this vehicle
-    this.statsTexts.get(vehicle.id)?.forEach(text => text.destroy());
+    // Clear existing stats safely
+    const existingStats = this.statsTexts.get(vehicle.id);
+    if (existingStats) {
+      existingStats.forEach(text => {
+        if (text && text.destroy) {
+          text.destroy();
+        }
+      });
+      this.statsTexts.delete(vehicle.id);
+    }
 
     const enemyVehicle = this.vehicles.find(v => v.id !== vehicle.id);
     const enemyHasOurTree = enemyVehicle?.stats.hasEnemyTree;
 
     // Calculate base position based on viewport
-    const baseX = side === 'left' ? 10 : WORLD_CONFIG.VIEWPORT_WIDTH / 2 + 10;
+    const baseX = side === 'left' ? 10 : ((this.gameMode === 'multi') ? 10 : WORLD_CONFIG.VIEWPORT_WIDTH / 2);
     const y = 10;
 
     const teamColor = vehicle.id === 'player1' ? '🔴' : '🔵';
@@ -69,19 +77,25 @@ export class RetroUI {
       );
 
       statText.setScrollFactor(0).setDepth(1002);
-
+      
       // Handle split screen visibility
       if (this.gameMode === 'multi') {
-        const camera1 = this.scene.cameras.main;
-        const camera2 = this.scene.cameras.getCamera(1);
-        
-        if (side === 'left') {
-          // Only show in left viewport
-          if (camera2) camera2.ignore(statText);
-        } else {
-          // Only show in right viewport
-          camera1.ignore(statText);
-        }
+          const camera1 = this.scene.cameras.main;
+          const camera2 = this.scene.cameras.getCamera("camera2");
+      
+          if (!camera2) {
+              console.warn("Camera2 not found! Make sure it is properly initialized.");
+          } else {
+              if (side === 'left') {
+                  // Camera 1 toont alleen de linker stats (rode auto)
+                  camera1.ignore([]); // Reset alle filters
+                  camera2.ignore([statText]);  // Camera 2 negeert rode stats
+              } else if (side === 'right') {
+                  // Camera 2 toont alleen de rechter stats (blauwe auto)
+                  camera2.ignore([]); // Reset alle filters
+                  camera1.ignore([statText]);  // Camera 1 negeert blauwe stats
+              }
+          }
       }
 
       return statText;

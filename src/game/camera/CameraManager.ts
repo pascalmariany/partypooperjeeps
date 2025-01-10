@@ -17,16 +17,16 @@ export class CameraManager {
   }
 
   setupSplitScreen(player1: Phaser.GameObjects.Container, player2: Phaser.GameObjects.Container) {
-    // Clear any existing separators
     this.clearSeparators();
 
-    // Setup main camera (left side - Player 1)
+    // Left camera for Player 1
     const mainCamera = this.scene.cameras.main;
     mainCamera.setViewport(0, 0, WORLD_CONFIG.VIEWPORT_WIDTH / 2 - 2, WORLD_CONFIG.VIEWPORT_HEIGHT);
     mainCamera.setBounds(0, 0, WORLD_CONFIG.WORLD_WIDTH, WORLD_CONFIG.WORLD_HEIGHT);
     mainCamera.startFollow(player1, true, 0.09, 0.09);
+    mainCamera.ignore([]);  // Reset ignore filters
 
-    // Setup second camera (right side - Player 2)
+    // Right camera for Player 2
     const camera2 = this.scene.cameras.add(
       WORLD_CONFIG.VIEWPORT_WIDTH / 2 + 2,
       0,
@@ -35,13 +35,17 @@ export class CameraManager {
     );
     camera2.setBounds(0, 0, WORLD_CONFIG.WORLD_WIDTH, WORLD_CONFIG.WORLD_HEIGHT);
     camera2.startFollow(player2, true, 0.09, 0.09);
+    camera2.setName('camera2');
+    camera2.ignore([]);  // Reset ignore filters
 
-    // Add separator with glow effect
+    // Add a glowing separator in the middle
     this.addSeparator(WORLD_CONFIG.VIEWPORT_WIDTH / 2);
   }
 
   private addSeparator(x: number) {
-    // Create main separator background
+    this.clearSeparators();
+
+    // Main black background separator
     const background = this.scene.add.graphics();
     background.fillStyle(0x000000, 1);
     background.fillRect(x - 4, 0, 8, WORLD_CONFIG.VIEWPORT_HEIGHT);
@@ -49,10 +53,10 @@ export class CameraManager {
     background.setDepth(999);
     this.separators.push(background);
 
-    // Create glow effect
+    // Create glowing effect with diminishing intensity
     const glowWidth = 4;
     const glowIntensity = 0.3;
-    
+
     for (let i = 0; i < 3; i++) {
       const separator = this.scene.add.graphics();
       separator.lineStyle(glowWidth + i * 2, 0x00ff00, glowIntensity / (i + 1));
@@ -65,7 +69,7 @@ export class CameraManager {
       this.separators.push(separator);
     }
 
-    // Add solid lines on both sides
+    // Solid green lines on both sides of the separator
     const lines = this.scene.add.graphics();
     lines.lineStyle(2, 0x00ff00, 1);
     lines.beginPath();
@@ -80,7 +84,14 @@ export class CameraManager {
   }
 
   private clearSeparators() {
-    this.separators.forEach(separator => separator.destroy());
+    this.separators.forEach(separator => {
+      if (separator) separator.destroy();
+    });
     this.separators = [];
+  }
+
+  // Extra utility to fetch cameras safely
+  getCameraByName(name: string): Phaser.Cameras.Scene2D.Camera | null {
+    return this.scene.cameras.getCamera(name) || null;
   }
 }
