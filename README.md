@@ -45,7 +45,7 @@ This project started on **bolt.new** and was further refined using my knowledge 
 
 ## Known Bugs
 
-- **Splitscreen:** The red player displays double stats, both on the left and right sides.
+- **Quit Menu not always works in Single Player** sometimes the Quit Menu isn't correctly working in Single Player. Refresh the browser to play again.
 - **Audio:** Audio playback does not always work correctly.
 
 ## Contributions
