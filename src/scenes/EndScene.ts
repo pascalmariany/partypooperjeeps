@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { supabase } from '../lib/supabase';
+import { fetchHighScores, saveHighScore } from '../lib/highscores';
 
 interface EndSceneData {
   winner: string;
@@ -114,7 +114,7 @@ export class EndScene extends Phaser.Scene {
       this.data.player1Presents : this.data.player2Presents;
 
     try {
-      await supabase.from('highscores').insert({
+      await saveHighScore({
         player_name: winnerName,
         score: winnerScore,
         presents_collected: winnerPresents,
@@ -130,13 +130,7 @@ export class EndScene extends Phaser.Scene {
 
   private async loadHighScores() {
     try {
-      const { data } = await supabase
-        .from('highscores')
-        .select('*')
-        .order('score', { ascending: false })
-        .limit(5);
-
-      this.highScores = data || [];
+      this.highScores = await fetchHighScores(5);
     } catch (error) {
       console.error('Error loading high scores:', error);
       this.highScores = [];

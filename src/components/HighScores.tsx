@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { fetchHighScores } from '../lib/highscores';
 
 interface HighScore {
   player_name: string;
@@ -15,14 +15,10 @@ export const HighScores = ({ onClose }: { onClose: () => void }) => {
 
   useEffect(() => {
     const fetchScores = async () => {
-      const { data, error } = await supabase
-        .from('highscores')
-        .select('*')
-        .order('score', { ascending: false })
-        .limit(10);
-
-      if (!error) {
-        setScores(data);
+      try {
+        setScores(await fetchHighScores(10));
+      } catch (error) {
+        console.error('Error loading high scores:', error);
       }
       setLoading(false);
     };

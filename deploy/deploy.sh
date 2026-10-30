@@ -2,6 +2,7 @@
 # Bouw lokaal en zet de build als nieuwe release op Contabo (atomaire symlink-wissel).
 # Gebruik: ./deploy/deploy.sh                 nieuwe release op https://partypooperjeeps.eu
 #          ./deploy/deploy.sh rollback   terug naar de vorige release
+#          ./deploy/deploy.sh api        highscore-API (highscores/) bijwerken
 set -euo pipefail
 HOST=contabo
 BASE=/var/www/partypooperjeeps.eu
@@ -10,6 +11,13 @@ cd "$(dirname "$0")/.."
 
 if [ "${1:-}" = rollback ]; then
   ssh "$HOST" "set -e; cd $BASE/releases; prev=\$(ls -1 | sort | tail -2 | head -1); cur=\$(readlink $BASE/current | xargs basename); [ \"\$prev\" != \"\$cur\" ] || { echo 'geen vorige release'; exit 1; }; ln -sfn $BASE/releases/\$prev $BASE/current.tmp && mv -T $BASE/current.tmp $BASE/current; rm -rf $BASE/releases/\$cur; echo \"terug naar \$prev\""
+  exit 0
+fi
+
+if [ "${1:-}" = api ]; then
+  # Highscore-API bijwerken (Docker op Contabo, data in volume partypooperjeeps_data)
+  rsync -az --delete highscores/ "$HOST:/root/partypooperjeeps/highscores/"
+  ssh "$HOST" "cd /root/partypooperjeeps/highscores && docker compose up -d --build && sleep 2 && curl -fsS http://127.0.0.1:8099/api/health"
   exit 0
 fi
 

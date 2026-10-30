@@ -1,0 +1,21 @@
+# Highscore-API van partypooperjeeps.eu (Contabo). Eigen projectnaam tegen botsingen met andere sites.
+name: partypooperjeeps
+
+services:
+  highscores:
+    build: .
+    image: partypooperjeeps-highscores:latest
+    container_name: partypooperjeeps-highscores
+    ports:
+      - "127.0.0.1:8099:8000"
+    volumes:
+      - data:/data
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "false"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  data:
